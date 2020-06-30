@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="he">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="בלוג Unix, פיתוח תכנה ואבטחת מידע.">
+    <meta name="author" content="bindh3x">
+    <meta name="robots" content="noarchive" />
+    <link rel="icon" href="/favicon.ico">
+
+    <title>bindh3x.io > יצירת פרופיל זמני ל - Firefox</title>
+
+    <link href="/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar clearfix">
+      <div class="container">
+
+	<div class="navbar-brand">
+	  <a href="/">bindh3x.io</a>
+	</div>
+
+	<ul class="navbar-right">
+	  <li><a href="/">בלוג</a></li>
+	  <li><a href="/about/">אודות</a></li>
+	</ul>
+
+	<ul class="navbar-left">
+	  <li><a href="/rss.xml">rss</a></li>
+	</ul>
+
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+      <div class="post">
+	<div class="post-info">
+	  <time datetime="1531303539">
+	    11/07/2018
+	  </time>
+	</div>
+
+	<h1 class="post-title">יצירת פרופיל זמני ל - Firefox</h1>
+	<div class="post-line"></div>
+
+	<p>סקריפט קצר ליצירת פרופיל זמני עבור Firefox:</p>
+
+<pre><code>#!/usr/bin/env sh
+
+tempfirefox_run() {
+    local temp="$(mktemp -d "/tmp/firefoxtemp-XXXXXX")"
+
+    trap "rm -rf $temp" INT TERM EXIT
+    HOME=$temp firefox --profile "$temp" --no-remote "$@"
+
+}
+
+tempfirefox_run "$@"
+</code></pre>
+
+<p>כל מה שנשאר עכשיו זה לשמור את הקוד בקובץ בשם <code>firefox-temp</code> ולהריץ.</p>
+
+<p>הסקריפט פורסם לבקשת אחד מהקוראים, אני משתמש בו כבר כמה חודשים והוא יציב.</p>
+
+    </div>
+
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+	<p>Copyright &copy; 2017-2020 bindh3x</p>
+	<p>Licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>
+      </div>
+    </footer>
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-103398205-1">
+  </script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-103398205-1');
+  </script>
+  </body>
+</html>
+

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="he">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="בלוג Unix, פיתוח תכנה ואבטחת מידע.">
+    <meta name="author" content="bindh3x">
+    <meta name="robots" content="noarchive" />
+    <link rel="icon" href="/favicon.ico">
+
+    <title>bindh3x.io > מה זה #!</title>
+
+    <link href="/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar clearfix">
+      <div class="container">
+
+	<div class="navbar-brand">
+	  <a href="/">bindh3x.io</a>
+	</div>
+
+	<ul class="navbar-right">
+	  <li><a href="/">בלוג</a></li>
+	  <li><a href="/about/">אודות</a></li>
+	</ul>
+
+	<ul class="navbar-left">
+	  <li><a href="/rss.xml">rss</a></li>
+	</ul>
+
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+      <div class="post">
+	<div class="post-info">
+	  <time datetime="1509182700">
+	    28/10/2017
+	  </time>
+	</div>
+
+	<h1 class="post-title">מה זה #!</h1>
+	<div class="post-line"></div>
+
+	<p>כולנו מכירים את  ה - <a href="https://en.wikipedia.org/wiki/Shebang_(Unix">Shebang/Hashbang</a>) שנראה כך:</p>
+
+<pre><code>#!/usr/bin/env bash
+</code></pre>
+
+<p>את המנגנון הזה הגה  <a href="https://en.wikipedia.org/wiki/Dennis_Ritchie">דניס ריצ'י</a> והוצג לראשונה ב - Unix 7. הוא מקל לנו על החיים ומאפשר להריץ סקריפטים בצורה הבאה:</p>
+
+<pre><code>$ ./script.py
+</code></pre>
+
+<p>במקום:</p>
+
+<pre><code>$ python script.py
+</code></pre>
+
+<p>אם לא תציינו את ה - Shebang, המערכת תריץ את הסקריפט שלכם
+ כקובץ שנכתב ב - shell.
+<br /></p>
+
+<h2>איך זה עובד?</h2>
+
+<p>בלינוקס המודל שמטפל במנגנון, נקרא <code>binfmt_script</code>, תוכלו למצוא אותו במיקום <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/binfmt_script.c">fs/binfmt_script.c</a>.
+<br />
+המימוש שבודק את השורה הראשונה:</p>
+
+<pre><code>static int load_script(struct linux_binprm *bprm)
+{
+    const char *i_arg, *i_name;
+    char *cp;
+    struct file *file;
+    int retval;
+
+    if ((bprm-&gt;buf[0] != '#') || (bprm-&gt;buf[1] != '!'))
+        return -ENOEXEC;
+
+}
+</code></pre>
+
+<p>כפי שניתן לראות בקוד, המודל בודק את שני התווים הראשונים בשורה, במידה והשורה לא מתחילה ב - <code>#!</code> מוחזרת שגיאת <code>ENOEXEC</code>,
+וההרצה מעוברת לטרמינל שמריץ אותו כקובץ shell.
+במידה והסקריפט עבר את הבדיקה מתבצע ניתוח הפרמטרים והרצה בהתאם.</p>
+
+<h1>אבטחה</h1>
+
+<p>מנגנון - Shebang מאפשר להריץ קבצים מבלי לדעת את הסיומת שלהם, אתם יכולים לכתוב קוד Python
+לשמור כ - <code>readme.txt</code> ועדין הוא ירוץ כרגיל, לכן חשוב מאוד לבדוק כל קוד שאתם מורידים מהרשת.</p>
+
+    </div>
+
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+	<p>Copyright &copy; 2017-2020 bindh3x</p>
+	<p>Licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>
+      </div>
+    </footer>
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-103398205-1">
+  </script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-103398205-1');
+  </script>
+  </body>
+</html>
+

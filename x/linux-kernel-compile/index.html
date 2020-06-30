@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="he">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="בלוג Unix, פיתוח תכנה ואבטחת מידע.">
+    <meta name="author" content="bindh3x">
+    <meta name="robots" content="noarchive" />
+    <link rel="icon" href="/favicon.ico">
+
+    <title>bindh3x.io > איך לקמפל קרנל (Linux)</title>
+
+    <link href="/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar clearfix">
+      <div class="container">
+
+	<div class="navbar-brand">
+	  <a href="/">bindh3x.io</a>
+	</div>
+
+	<ul class="navbar-right">
+	  <li><a href="/">בלוג</a></li>
+	  <li><a href="/about/">אודות</a></li>
+	</ul>
+
+	<ul class="navbar-left">
+	  <li><a href="/rss.xml">rss</a></li>
+	</ul>
+
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+      <div class="post">
+	<div class="post-info">
+	  <time datetime="1505236352">
+	    12/09/2017
+	  </time>
+	</div>
+
+	<h1 class="post-title">איך לקמפל קרנל (Linux)</h1>
+	<div class="post-line"></div>
+
+	<p>החלטתי לכתוב פוסט מרוכז על - "איך אני מקמפל את הקרנל שלי" באיזה פאטצ'ים אני משתמש, ולשתף כמו דברים שלמדתי בדרך, המדריך הינו בסיסי ונכתב על מנת לעזור למתחילים.</p>
+
+<h1>אז למה לקמפל?</h1>
+
+<ul>
+<li>יציבות</li>
+</ul>
+
+<p>הפתרון הקל לקרנל יציב הוא להשתמש בגרסאות ה - LTS  למינהם שנמצאות במאגרים הרשמיים של הפצת הלינוקס שבה אתם משתמשים. בדרך כלל כל הפצה תחזיק גרסה  יציבה (LTS), וגרסה
+עדכנית. אין בזה שום בעיה ולרוב הגרסאות הללו יהיו יציבות מאוד אך עלולות להכיל חורי אבטחה. מה שמביא אותי לדבר על הסיבה הבאה.</p>
+
+<ul>
+<li>אבטחה</li>
+</ul>
+
+<p>כאשר אתם מקפלים קרנל בעצמכם יש לכם שליטה מלאה בהגדרות האבטחה של הקרנל, תוכלו להתאים כל דבר שנראה לכם (בהנחה שאתם יודעים מה אתם עושים) מ - ASLR עד - SELinux
+ולהקשיח את המערכת שלכם.</p>
+
+<ul>
+<li>אופטימיזציה</li>
+</ul>
+
+<p>תוכלו לגרום למערכת שלכם לעבוד ביעילות, לבטל הגדרות שפוגעות בביצועי המערכת, למנוע קימפול של מודולים שאינם בשימוש ועוד. נרחיב על כך בהמשך.</p>
+
+<h1>מתחילים</h1>
+
+<p>אז הדבר הראשון שנצטרך הוא את קוד המקור של לינוקס.  ניתן  להוריד אותו מ - <a href="https://kernel.org">kernel.org</a>.
+תבחרו גרסה שמתאימה לכם. הנוסחה היא פשוטה : אם הגרסה של הקרנל שרץ לכם כרגע במחשב יציבה תבחרו בה.</p>
+
+<pre><code>$ uname -a
+Linux 4.12.12-1 #1 SMP PREEMPT Sun Sep 10 09:41:14 CEST 2017 x86_64 GNU/Linux
+</code></pre>
+
+<p>אני אבחר בגרסה: <code>4.11.1</code> - בשבילי היא יציבה מספיק.
+לאחר ההורדה צרו תיקייה בשם <code>linux</code> וחלצו לתוכה את קוד המקור של הקרנל.</p>
+
+<pre><code>$ mkdir linux
+$ mv downloads/linux-4.11.1.tar.xz linux/
+$ cd linux &amp;&amp; tar xvf  linux-4.11.1.tar.xz
+</code></pre>
+
+<p>לאחר שחילצנו את הקרנל, נעבור לחלק היותר מעניין: החלת -  patches.
+למי שלא יודע פאטץ' (patch) - הוא טלאי לקוד מסוים, בשימוש בטלאי ניתן להוסיף או להסיר קטעי קוד.
+הרבה kernel hackers כתבו patches שנועדו לשפר את ביצועי הקרנל, אך אינם חלק מה - mainline ולכן נצטרך להוריד אותם בנפרד.</p>
+
+<h1>patches</h1>
+
+<p>ה - patch הראשון שבו נשתמש הוא של <a href="http://users.on.net/~ckolivas/kernel/">Con Kolivas</a> - בחור אוסטרלי מוכר מאוד בסצנה שבין היתר כתב את <a href="http://lrzip.kolivas.org/">LRZIP</a>.
+בשנת 2009 Kolivas כתב את - <a href="https://en.wikipedia.org/wiki/Brain_Fuck_Scheduler">Brain Fuck Scheduler</a>.  ה - Process scheduler כחלופה ל - <a href="https://en.wikipedia.org/wiki/Completely_Fair_Scheduler">CFS</a> - אני לא ארחיב על <a href="https://en.wikipedia.org/wiki/Scheduling_(computing">Scheduling</a>) בפוסט זה.
+בשורה התחתונה BFS - ישפר את ביצועי המערכת שלכם באופן משמעותי אם את משתמשים ב - Desktop.
+החל מלינוקס <code>4.8</code> - BFS כבר לא בפיתוח ונכתב מחדש כ - <a href="http://ck.kolivas.org/patches/muqss/4.0/">MUQss</a>.</p>
+
+<p>ניתן להוריד את ה - patch <a href="http://ck.kolivas.org/patches/muqss/">מכאן</a> לפי גרסת הקרנל שאנחנו מקמפלים, במקרה שלי זה - <code>4.11.1</code>.
+לאחר ההורדה מקמו את ה - patch בתיקיית השורש של הקרנל שלכם:</p>
+
+<pre><code>$ pwd
+~/linux
+$ mv 4.11-sched-MuQSS_156.patch linux-4.11.1/
+$ ls linux-4.11.1/
+4.11-sched-MuQSS_156.patch  crypto         init     MAINTAINERS  scripts
+arch                        Documentation  ipc      Makefile     security
+block                       drivers        Kbuild   mm           sound
+certs                       firmware       Kconfig  net          tools
+COPYING                     fs             kernel   README       usr
+CREDITS                     include        lib      samples      virt
+</code></pre>
+
+<p>הפאטץ' הבא שבו נשתמש הוא - <a href="https://en.wikipedia.org/wiki/I/O_scheduling#Scheduling_disciplines">Budget Fair Queueing</a> ה - I/O scheduler. ניתן להוריד אותו <a href="http://algo.ing.unimo.it/people/paolo/disk_sched/sources.php">מכאן</a>. במידה ואתם משתמשים בקרנל 4.12.0 ומעלה, אין צורך להוריד את BFQ לינוקס כבר מכיל אותו.
+<br/>
+לאחר שהורדתם את ה - patches נחיל אותם על קוד המקור של הקרנל. לפי הסדר:</p>
+
+<pre><code>$ patch -p1 &lt; 0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r11-4.11..patches
+$ patch -p1 &lt; 0002-block-introduce-the-BFQ-v7r11-I-O-sched-for-4.11.0.patch
+$ patch -p1 &lt; 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r11-for.patch
+$ patch -p1 &lt; 0004-blk-bfq-turn-BFQ-v7r11-for-4.11.0-into-BFQ-v8r11-for.patch
+$ patch -p1 &lt; 4.11-sched-MuQSS_156.patch
+</code></pre>
+
+<p>לאחר ההחלה נעבור לחלק "הטריקי" - הגדרת הקרנל. לפני שתמשיכו וודאו שהחבילה <code>bc</code> מותקנת בהפצה שלכם.
+הקרנל שרץ לכם כרגע במערכת מוגדר באמצעות קובץ <code>config</code> שנמצא במיקום <code>/proc/config.gz</code>, נשתמש בקובץ זה על מנת לשמור הגדרות קיימות בקרנל.
+הכנת הקרנל:</p>
+
+<pre><code>$ make mrproper
+$ zcat /proc/config.gz &gt; .config
+$ make menuconfig
+</code></pre>
+
+<p>לאחר הרצת הפקודות תקבלו תפריט שנראה כך:</p>
+
+<p><img src="/img/linux_compile_screenshot_1.png" alt="linux<em>compile</em>menu" title="" /></p>
+
+<p><br />
+האפשרות הראשונה "General setup" מיועדת להגדרות כלליות כמו בחירת <code>CPU Scheduler</code> וכדומה:</p>
+
+<p><img src="/img/linux_compile_muqss.png" alt="linux_muqss" title="" /></p>
+
+<p>במידה ואתם רוצים לקבל מידע על אפשרות, תקישו - <code>h</code>:</p>
+
+<p><img src="/img/linux_compile_muqss_help.png" alt="linux_muqss" title="" /></p>
+
+<p>תעברו על האפשרויות השונות ותגדירו. <strong>אל תשנו הגדרות שאתם לא מכירים</strong>.
+<br />
+לאחר ה - "General setup" נעבור להגדרת ה - <code>IO Scheduler</code>.
+<br />
+עברו למיקום: <code>Enable the block layer -&gt; IO Schedulers</code></p>
+
+<p>תאפשרו את ה - <code>BFQ Scheduler</code> באמצעות מקש ה - "space":</p>
+
+<p><img src="/img/linux_compile_bfq_menu.png" alt="linux<em>bfq</em>menu" title="" /></p>
+
+<p>לאחר מכן עברו לאפשרות <code>Default IO Scheduler</code> - ושנו ל - BFQ:</p>
+
+<p><img src="/img/linux_compile_bfq_select.png" alt="linux<em>bfq</em>menu" title="" /></p>
+
+<p>פה זה לא נגמר כמובן. תבדקו כל אפשרות שלא נראת לכם.
+<br/>
+תחפשו הגדרות מומלצות לחומרה שלכם.
+את הקרנל הנוכחי אני מקמפל ללפטופ HP עם מעבד של intel, לכן מודולים שמיועדים ל - Dell/IBM/AMD - לא רלוונטים עבורי.</p>
+
+<p><img src="/img/linux_compile_dell_option.png" alt="linux<em>dell</em>option" title="" /></p>
+
+<p>מפה זה תלוי בכם. אני לא מכיר את החומרה שלכם. אבל תפעילו שיקול דעת, ומה שלא נראה לכם פשוט <strong>אל תגדירו</strong>.
+<br />
+אם יש לכם שאלה אתם מוזמנים לשאול אותי.</p>
+
+<h1>קימפול</h1>
+
+<p>הגיע הזמן. אחרי שהכנו את הקרנל, נבנה אותו:
+<br/>
+תריצו:</p>
+
+<pre><code>$ make -j4
+</code></pre>
+
+<p>זה יקח קצת. אז תתאזרו בסבלנות, מומלץ לסגור דפדפנים פתוחים או כל יישום שלוקח כח עיבוד.</p>
+
+<p>כשהקרנל יהיה מוכן, תקבלו את ההודעה:</p>
+
+<pre><code>Kernel: arch/x86/boot/bzImage is ready  (#1)
+</code></pre>
+
+<p>לאחר הקימפול נתקין את המודולים החדשים:</p>
+
+<pre><code>$ sudo make modules_install
+</code></pre>
+
+<p>במידה ואתם מפתחים מודולים לקרנל אתם תצטרכו את ה - headers.
+תתקינו אותם עם הפקודה:</p>
+
+<pre><code>$ sudo make headers_install
+</code></pre>
+
+<p>נעתיק את הקרנל החדש לתקיית ה - <code>/boot</code>
+<br />
+<br />
+<code>64-bit:</code></p>
+
+<pre><code>cp -v arch/x86_64/boot/bzImage /boot/vmlinuz-linux-bh
+</code></pre>
+
+<p><code>32-bit:</code></p>
+
+<pre><code>cp -v arch/x86/boot/bzImage /boot/vmlinuz-linux-bh
+</code></pre>
+
+<p>ניצור <code>initial RAM disk</code>:</p>
+
+<pre><code>$ sudo mkinitcpio -k 4.11.1-bh -g /boot/initramfs-linux-bh
+</code></pre>
+
+<p>ולסיום נוסיף את הקרנל החדש לתפריט של - <code>grub</code>:</p>
+
+<pre><code>$ sudo grub-mkconfig -o /boot/grub/grub.cfg
+</code></pre>
+
+<p>זהו! כל מה שנשאר הוא לבצע <code>reboot</code> ולהנות מהקרנל החדש.</p>
+
+<h1>סיכום</h1>
+
+<p>יש יתרונות וחסרונות בקימפול הקרנל שלכם, מבחינתי היתרונות עולות על החסרונות.
+במידה ואתם משתמשים ב - Archlinux תוכלו לקצר את כל התהליך הידני ולהשתמש ב - PKGBUILD.
+לדוגמה: <a href="https://aur.archlinux.org/packages/linux-ck/">linux-ck</a>.</p>
+
+    </div>
+
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+	<p>Copyright &copy; 2017-2020 bindh3x</p>
+	<p>Licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>
+      </div>
+    </footer>
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-103398205-1">
+  </script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-103398205-1');
+  </script>
+  </body>
+</html>
+

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+<title>bindh3x.io</title>
+<link>https://bindh3x.io</link>
+<description>בלוג Unix, פיתוח תכנה ואבטחת מידע.</description>
+<language>he</language>
+<lastBuildDate>Tue, 30 Jun 2020 05:54:56 +0300</lastBuildDate>
+<pubDate>Tue, 30 Jun 2020 05:54:56 +0300</pubDate>
+<atom:link href="https://bindh3x.io/rss.xml" rel="self" type="application/rss+xml" />
+<item>
+<title>מנגנון retguard ב - OpenBSD</title>
+<dc:creator>bindh3x</dc:creator>
+<guid>https://bindh3x.io/x/retguard</guid>
+<link>https://bindh3x.io/x/retguard</link>
+<pubDate>Tue, 30 Jun 2020 05:54:21 +0300</pubDate>
+<description><![CDATA[
+  <pre><code>$ datediff 'july 11 2018'
+707 days ago
+$  bc -le "707/365" -e quit...
+]]></description>
+</item>
+<item>
+<title>יצירת פרופיל זמני ל - Firefox</title>
+<dc:creator>bindh3x</dc:creator>
+<guid>https://bindh3x.io/x/firefox-temp-profile/</guid>
+<link>https://bindh3x.io/x/firefox-temp-profile/</link>
+<pubDate>Wed, 11 Jul 2018 13:05:39 +0300</pubDate>
+<description><![CDATA[
+  <p>סקריפט קצר ליצירת פרופיל זמני עבור Firefox:</p>
+
+<pre><code>#!/usr/bin/env sh...
+]]></description>
+</item>
+<item>
+<title>מדריך לשפת התכנות - Tcl</title>
+<dc:creator>bindh3x</dc:creator>
+<guid>https://bindh3x.io/x/tcl/</guid>
+<link>https://bindh3x.io/x/tcl/</link>
+<pubDate>Sun, 01 Jul 2018 12:48:24 +0300</pubDate>
+<description><![CDATA[
+  <p>זהו מדריך קצרצר לשפת התכנות Tcl, הוא מלמד כיצד לעבוד עם השפה ונותן רקע בסיסי למתכנתים שרוצים ללמוד אותה. Tcl היא למעשה Shell על סטרואידים ניתן להרחיב אותה בקלות עם C, והיא קלה ללמידה. זאת שפה שתיתן לכם פרוספקטיבה שונה בתור מתכנתים מפני שהיא שונה מרוב השפות שאתם מכירים.</p>
+
+<h3>רקע</h3>...
+]]></description>
+</item>
+<item>
+<title>על OpenBSD ו - Linux</title>
+<dc:creator>bindh3x</dc:creator>
+<guid>https://bindh3x.io/x/openbsd-and-linux/</guid>
+<link>https://bindh3x.io/x/openbsd-and-linux/</link>
+<pubDate>Mon, 07 May 2018 11:23:29 +0300</pubDate>
+<description><![CDATA[
+  <p>מבחינתי קריאת קוד זה כמו לקרוא ספר. כל חלק בקוד המקור הוא פרק בספר, כשאתם
+עובדים לפי הטרמינולוגיה הזאת אתם משפרים את היכולת שלכם, לומדים טכניקות
+חדשות, ומעצבים את סגנון הכתיבה שלכם. לכל אחד יש סטייל שונה, צורה שבה הוא...
+]]></description>
+</item>
+<item>
+<title>מה זה #!</title>
+<dc:creator>bindh3x</dc:creator>
+<guid>https://bindh3x.io/x/binfmt_script/</guid>
+<link>https://bindh3x.io/x/binfmt_script/</link>
+<pubDate>Sat, 28 Oct 2017 12:25:00 +0300</pubDate>
+<description><![CDATA[
+  <p>כולנו מכירים את  ה - <a href="https://en.wikipedia.org/wiki/Shebang_(Unix">Shebang/Hashbang</a>) שנראה כך:</p>
+
+<pre><code>#!/usr/bin/env bash...
+]]></description>
+</item>
+<item>
+<title>תוציאו את המיטב מהטרמינל שלכם</title>
+<dc:creator>bindh3x</dc:creator>
+<guid>https://bindh3x.io/x/terminal/</guid>
+<link>https://bindh3x.io/x/terminal/</link>
+<pubDate>Sun, 08 Oct 2017 10:00:00 +0300</pubDate>
+<description><![CDATA[
+  <p>את הפוסט הנוכחי רציתי לכתוב כבר הרבה זמן, והוא מכיל קוד שבו אני משתמש באופן קבוע.
+<br />
+אני בטוח שכל מי שהעיניים שלו מרצדות בטרמינל רוב שעות היום, ימצא אותו שימושי....
+]]></description>
+</item>
+<item>
+<title>איך לקמפל קרנל (Linux)</title>
+<dc:creator>bindh3x</dc:creator>
+<guid>https://bindh3x.io/x/linux-kernel-compile/</guid>
+<link>https://bindh3x.io/x/linux-kernel-compile/</link>
+<pubDate>Tue, 12 Sep 2017 20:12:32 +0300</pubDate>
+<description><![CDATA[
+  <p>החלטתי לכתוב פוסט מרוכז על - "איך אני מקמפל את הקרנל שלי" באיזה פאטצ'ים אני משתמש, ולשתף כמו דברים שלמדתי בדרך, המדריך הינו בסיסי ונכתב על מנת לעזור למתחילים.</p>
+
+<h1>אז למה לקמפל?</h1>...
+]]></description>
+</item>
+<item>
+<title>התחלה</title>
+<dc:creator>bindh3x</dc:creator>
+<guid>https://bindh3x.io/x/התחלה/</guid>
+<link>https://bindh3x.io/x/התחלה/</link>
+<pubDate>Thu, 03 Aug 2017 22:16:45 +0300</pubDate>
+<description><![CDATA[
+  <p>אז זה הבלוג שלי. אני אכתוב בעיקר על פרויקטים שאני עובד עליהם, אבטחת מידע, תוכנה ועוד.
+<br />
+הבלוג עצמו סטטי אני לא משתמש במערכת תוכן רק ב - Jekyll ו - Markdown....
+]]></description>
+</item>
+</channel></rss>

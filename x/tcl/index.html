@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="he">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="בלוג Unix, פיתוח תכנה ואבטחת מידע.">
+    <meta name="author" content="bindh3x">
+    <meta name="robots" content="noarchive" />
+    <link rel="icon" href="/favicon.ico">
+
+    <title>bindh3x.io > מדריך לשפת התכנות - Tcl</title>
+
+    <link href="/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar clearfix">
+      <div class="container">
+
+	<div class="navbar-brand">
+	  <a href="/">bindh3x.io</a>
+	</div>
+
+	<ul class="navbar-right">
+	  <li><a href="/">בלוג</a></li>
+	  <li><a href="/about/">אודות</a></li>
+	</ul>
+
+	<ul class="navbar-left">
+	  <li><a href="/rss.xml">rss</a></li>
+	</ul>
+
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+      <div class="post">
+	<div class="post-info">
+	  <time datetime="1530438504">
+	    01/07/2018
+	  </time>
+	</div>
+
+	<h1 class="post-title">מדריך לשפת התכנות - Tcl</h1>
+	<div class="post-line"></div>
+
+	<p>זהו מדריך קצרצר לשפת התכנות Tcl, הוא מלמד כיצד לעבוד עם השפה ונותן רקע בסיסי למתכנתים שרוצים ללמוד אותה. Tcl היא למעשה Shell על סטרואידים ניתן להרחיב אותה בקלות עם C, והיא קלה ללמידה. זאת שפה שתיתן לכם פרוספקטיבה שונה בתור מתכנתים מפני שהיא שונה מרוב השפות שאתם מכירים.</p>
+
+<h3>רקע</h3>
+
+<p>Tcl פותחה בסוף שנות ה - 80, והיא צברה פופולריות במהרה. התחביר שלה קל ופשוט להבנה,
+בלי כל מיני "שטויות" או תכנוני עיצוב "מתוחכמים" ששפות מודרניות מציגות.</p>
+
+<p>אם אין לכם ידע ב - Tcl, אני ממליץ לכם לקרוא את המדריך של <a href="https://www.tcl.tk/man/tcl8.5/tutorial/Tcl1.html">השפה</a>.
+אם אתם מעדיפים גרסה יותר קצרה תוכלו לקרוא את המדריך של antirez (הבחור שכתב את Redis) <a href="http://www.invece.org/tclwise/">כאן</a>. ואם אתם ממש מתעקשים,
+תמשיכו לקרוא את הפוסט.</p>
+
+<p>אחד מהיתרונות של Tcl הוא שקל לממש את השפה, כיום המימוש הכי נפוץ (ומהיר) הוא 8.6, כל מימוש אחר של השפה
+כמו <a href="https://github.com/msteveb/jimtcl">JimTcl</a> יהיה יותר איטי.
+ולכן אני אשתמש ב - Tcl 8.6 שתוכלו להתקין עם מנהל החבילות של המערכת שלכם בקלות.</p>
+
+<h3>איך לקרוא את המדריך</h3>
+
+<p>אני משתדל לכתוב את הפוסטים שלי בצורה שתהי מובנת גם לאחרים, אני כותב בפשטות
+מבלי לסבך את הקוראים ולגרום לכם לאבד עניין. אם בכל זאת יש לכם שאלה לגבי הפוסט, אתם מוזמנים לשאול.
+כמו כן, אני מניח שלקוראים יש ידע בתכנות, עדיף ב - Shell (משתנים, לולאות, פונקציות וכ'ו).</p>
+
+<p>קריאה מהנה!</p>
+
+<h3>בסיס</h3>
+
+<p>בואו נתחיל עם ה - Hello World! המסורתי, צרו קובץ בשם hello.tcl עם התוכן הבא:</p>
+
+<pre><code>puts "Hello, World!"
+</code></pre>
+
+<p>תריצו:</p>
+
+<pre><code>$ tclsh hello.tcl
+Hello, World!
+</code></pre>
+
+<p>חשוב לזכור, כל דבר ב - Tcl הוא מחרוזת, לדוגמה:</p>
+
+<pre><code>set x pu
+set y ts
+$x$y "Hello, World!"
+</code></pre>
+
+<p>הפקודה <code>set</code> מגדירה משתנה, היא מקבלת שני ארגומנטים: שם המשתנה, והערך שלו.
+חשוב לזכור שבמידה והערך של המשתנה, מורכב מיותר ממילה אחת, חובה להקיף
+אותו במרכאות ("") או ({}), על מנת שהוא ייחשב כארגומנט בודד (בדיוק כמו בשורת הפקודה):</p>
+
+<pre><code>puts Hello, World!   # Bad
+puts "Hello, World!" # Good
+puts {Hello, World}  # Good
+</code></pre>
+
+<p>הקפה במרכאות נקראת grouping.</p>
+
+<p>כפי שכבר הבנתם, השפה עובדות עם פקודות שמקבלות ארגומנטים ופרמטרים.
+לדוגמה אם תרצו להשתמש בפקודה <code>puts</code> ללא הדפסת תו שורה חדשה תעשו
+זאת כך:</p>
+
+<pre><code>puts -nonewline "Hello, World!"
+</code></pre>
+
+<h3>משתנים</h3>
+
+<p>ב - Tcl ניתן להגדיר משתנה חדש עם הפקודה <code>set</code>:</p>
+
+<pre><code>set myvariable  "Hello, World!"
+</code></pre>
+
+<p>שם המשתנה יכול להכיל רווחים, כך תעשו זאת:</p>
+
+<pre><code>set {my variable} "Hello, World!"
+puts ${my variable}
+</code></pre>
+
+<p>במידה ותרצו להגדיר משתנים ב - global scope, תוסיפו "::" לפני שם המשתנה:</p>
+
+<pre><code># Bad
+proc test {} {
+    set xtest "Hello, World!"
+}
+
+test
+puts $xtest # Error!
+
+# Good
+proc test {} {
+    set ::xtest "Hello, World!"
+}
+
+test
+puts $::xtest
+-&gt; Hello, World!
+</code></pre>
+
+<p>כאשר את מגדירים משתנים גלובלים, תמיד תגדירו אותם כמו ב
+האחרונה.</p>
+
+<h3>תגובות</h3>
+
+<p>כמו ב - Shell התגובות ב - Tcl מתחילות ב - #:</p>
+
+<pre><code># This is a comment.
+puts "Hello, World!"
+</code></pre>
+
+<p>במידה ותרצו להוסיף תגובה בסוף שורה, תעשו זאת כך:</p>
+
+<pre><code>puts "Hello, World!" ;# This is a comment.
+</code></pre>
+
+<h3>פקודות</h3>
+
+<p>ניתן להריץ פקודות בכל שלב, בתוך ביטויים (בדיוק כמו ב - Shell) לדוגמה:</p>
+
+<pre><code>set name [puts John]
+puts $name
+
+set files [exec ls]
+puts $files
+</code></pre>
+
+<p>בכדי להריץ פקודה בתוך ביטויי, הקיפו אותה ב - [ COMMAND ].</p>
+
+<h3>ביטויים ותנאים</h3>
+
+<p>ה הכי בסיסית:</p>
+
+<pre><code>if {1 == 1} {
+    puts "yes"
+} elseif {2 == 1} {
+    puts "no"
+} else {
+    puts "no"
+}
+</code></pre>
+
+<p>שימוש ב - <code>switch</code>:</p>
+
+<pre><code>puts -nonewline stderr "User: "
+set user [gets stdin]
+
+switch $user {
+    "root" {
+        puts "You can do anything."
+    }
+    "john" {
+        puts "noop"
+    }
+    default {
+        puts "I don't know."
+    }
+}
+</code></pre>
+
+<h3>לולאות</h3>
+
+<p>לולאת <code>foreach</code>:</p>
+
+<pre><code>set mylst [glob /usr/include/*.h]
+
+foreach item $mylst {
+    puts $item
+}
+</code></pre>
+
+<p>לולאת <code>while</code>:</p>
+
+<pre><code>set i 0
+
+while {$i &lt; 10} {
+    puts $i
+    set i [expr $i + 1]
+}
+</code></pre>
+
+<p>לולאת <code>for</code>:</p>
+
+<pre><code>for {set x 0} {$x&lt;10} {incr x} {
+    puts "$x"
+}
+</code></pre>
+
+<h3>Procedure</h3>
+
+<p>על מנת להגדיר פקודה חדשה (Procedure) נשתמש בפקודה <code>proc</code> לדוגמה:</p>
+
+<pre><code>proc say_my_name name {
+    puts "My name is: $name."
+}
+
+say_my_name John
+-&gt; My name is John
+</code></pre>
+
+<p>אפשר להשוות את הפקודה <code>proc</code> להגדרת פונקצייה חדשה בשפת תכנות סטנדרטית.</p>
+
+<p>אם אתם רוצים להעביר יותר מארגומנט אחד לפקודה שלכם, תעשו זאת כך:</p>
+
+<pre><code>proc say_my_name {name age} {
+    puts "Name: $name, Age: $age"
+}
+
+say_my_name "John X" 100
+-&gt; Name: John X, Age: 100
+</code></pre>
+
+<p>בברירת מחדל הערך שפקודה חדשה שנוצרה עם <code>proc</code> תחזיר, הוא הפלט של הפקודה האחרונה. לדוגמה:</p>
+
+<pre><code>proc hello {} {
+    puts "Hello World"
+}
+
+set x [hello]
+puts $x
+-&gt; Hello World
+</code></pre>
+
+<p><code>hello</code> תחזיר Hello, World למרות שלא ציינו את זה עם <code>return</code>, ניתן להחזיר ערכים
+גם עם <code>return</code> כמובן:</p>
+
+<pre><code>proc hello {} {
+    return "Hello World"
+}
+
+set x [hello]
+puts $x
+-&gt; Hello World
+</code></pre>
+
+<p>הגדרת ערכי ברירת מחדל ל - Procedure:</p>
+
+<pre><code>proc default_name {{name John}, age} {
+    puts "Name: $name, age: $age."
+}
+</code></pre>
+
+<h3>חשבון</h3>
+
+<p>בכדי לחשב מספרים נשתמש בפקודה <code>expr</code> לדוגמה:</p>
+
+<pre><code>set sum [expr 1 + 1 + 1 + 1 + [expr 13 * 10]]
+puts $sum
+-&gt; 134
+</code></pre>
+
+<h3>מחרוזות</h3>
+
+<p>חיבור מחרוזות עם הפקודה <code>append</code>:</p>
+
+<pre><code>set x "Hello, "
+set y "World!"
+set z [append x $y]
+puts $z
+-&gt; Hello, World!
+</code></pre>
+
+<p>יותר קצר:</p>
+
+<pre><code>set x "Hello, "
+set y "World!"
+puts "$x$y"
+-&gt; Hello, World!
+</code></pre>
+
+<p>הפרדת מחרוזות על ידי התו <code>\</code> :</p>
+
+<pre><code>set url https://bindh3x.io/file/file.txt
+set file_name [lindex [split $url /] end]
+puts $file_name
+</code></pre>
+
+<p>קבלת אורך מחרוזות:</p>
+
+<pre><code>set msg "Hello, World!"
+puts [length $msg]
+</code></pre>
+
+<h3>עבודה עם קבצים</h3>
+
+<p>קריאת 10 התווים הראשונים מקובץ <code>/etc/passwd</code>:</p>
+
+<pre><code>set fp [open /etc/passwd r]
+puts [read $fp 10]
+close $fp
+</code></pre>
+
+<p>קריאת קובץ שורה-שורה:</p>
+
+<pre><code>set fp [open /etc/passwd r]
+set lines [split [read $fp] "\n"]
+
+foreach line $lines {
+    puts "LINE: $line"
+}
+
+close $fp
+</code></pre>
+
+<p>כתיבת המחרוזת  - <code>Hello John</code> לקובץ <code>hello.txt</code>:</p>
+
+<pre><code>set fp [open hello.txt w]
+puts $fp "Hello, John"
+close $fp
+</code></pre>
+
+<h3>מערך (Array)</h3>
+
+<p>Tcl תומכת במערכים, ניתן להגדיר אותם בצורה הבאה:</p>
+
+<pre><code>array set myarray {hello world world hello}
+puts $myarray(hello)
+-&gt; world
+</code></pre>
+
+<p>יותר קצר:</p>
+
+<pre><code>set myarray(hello)  world
+puts $myarray(hello)
+</code></pre>
+
+<p>הוספת איבר למערך:</p>
+
+<pre><code>array set hello {new world}
+puts $hello(new)
+-&gt; world
+</code></pre>
+
+<p>מחיקת איבר ממערך:</p>
+
+<pre><code>array set hello {hello world}
+array unset hello hello
+</code></pre>
+
+<p>קבלת גודל מערך:</p>
+
+<pre><code>array set hello {hello world world hello}
+puts [array size hello]
+-&gt; 2
+</code></pre>
+
+<p>הדפסת כל האברים במערך:</p>
+
+<pre><code>array set hello {hello world world hello}
+
+foreach {key value} [array get hello] {
+    puts $value
+}
+</code></pre>
+
+<h3>רשימה (List)</h3>
+
+<p>יצירת רשימה והדפסת האיבר הראשון:</p>
+
+<pre><code>set mylist  "hello world world hello"
+puts [lindex 0]
+-&gt; hello
+</code></pre>
+
+<p>חיבור שני רשימות:</p>
+
+<pre><code>set list1 "10 9 8 7 6 5"
+set list2 "1 2 3 4 5"
+set clist [concat $list1 $list2]
+</code></pre>
+
+<p>הדפסת גודל הרשימה:</p>
+
+<pre><code>set mylst "hello world"
+puts [llength $mylst]
+-&gt; 2
+</code></pre>
+
+<h3>מילון (Dict)</h3>
+
+<p>יצירת מילון:</p>
+
+<pre><code>dict set colors red #F44336
+dict set colors blue #1976D2
+dict set colors green #7CB342
+</code></pre>
+
+<p>הדפסת כל הערכים במילון:</p>
+
+<pre><code>dict for {name color} $colors {
+    puts "name: $name, color: $value"
+}
+</code></pre>
+
+<p>הדפסת גודל המילון:</p>
+
+<pre><code>puts [dict size $colors]
+-&gt; 3
+</code></pre>
+
+<h3>Packages</h3>
+
+<p>ב - Tcl ניתן לייבא חבילות בדיוק כמו <code>import</code> בשפת Python,
+הקוד שלפניכם ידפיס את כתובת ה - IP שלכם:</p>
+
+<pre><code>package require http
+
+::http::config -useragent "curl/7.60.0"
+
+set token [::http::geturl http://ipinfo.io/]
+set data [::http::data $token]
+regexp {\d+.\d+.\d+.\d+} $data ip
+
+puts $ip
+</code></pre>
+
+<p>ב השתמשנו בחבילה <code>http</code> שמסופקת בברירת מחדל עם Tcl 8.6.</p>
+
+<h3>עבודה עם קבצי הגדרות</h3>
+
+<p>ב - Tcl יש פקודה בשם <code>source</code> שמאפשרת לעשות <code>include</code> לקובץ (בדיוק כמו ב
+- Shell). ניתן לנצל את האפשרות הזאת ליצירת קובץ הגדרות לסקריפט שלנו.</p>
+
+<p>לצורך ה, ניצור סקריפט שינקה את תקיית הבית שלנו מקבצים לא רצויים.
+צרו קובץ בשם <code>clean.tcl</code> עם התוכן הבא:</p>
+
+<pre><code>#!/usr/bin/env tclsh
+
+source "$::env(HOME)/.config/clean.conf"
+
+proc clean_log {level msg} {
+    exec logger -p $level -t clean "$msg"
+}
+
+foreach f $::clean_files {
+    set path $::clean_root/$f
+    if {[file exists $path]} {
+        clean_log info "Cleaning '$path'"
+        file delete -force $path
+    }
+}
+</code></pre>
+
+<p>כפי שניתן לראות הסקריפט מקבל רשימת קבצים לניקוי מהקובץ <code>clean.conf</code>
+ומוחק אותם במידה והם קיימים.</p>
+
+<p>כך יראה קובץ ה - <code>clean.conf</code> שלנו:</p>
+
+<pre><code># Root directory.
+set ::clean_root "$::env(HOME)"
+
+set ::clean_files {
+    .config/dconf/
+    .config/procps/
+    .python_history
+}
+</code></pre>
+
+<p>תריצו את הסקריפט:</p>
+
+<pre><code>chmod +x clean.tcl
+./clean.tcl
+</code></pre>
+
+<p>ותבדקו ב - syslog, הסקריפט ידווח אם קובץ נמחק.</p>
+
+<h1>סיכום</h1>
+
+<p>זהו עד כאן, תודה שקראתם את המדריך!</p>
+
+    </div>
+
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+	<p>Copyright &copy; 2017-2020 bindh3x</p>
+	<p>Licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>
+      </div>
+    </footer>
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-103398205-1">
+  </script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-103398205-1');
+  </script>
+  </body>
+</html>
+

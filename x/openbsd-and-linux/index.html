@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="he">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="בלוג Unix, פיתוח תכנה ואבטחת מידע.">
+    <meta name="author" content="bindh3x">
+    <meta name="robots" content="noarchive" />
+    <link rel="icon" href="/favicon.ico">
+
+    <title>bindh3x.io > על OpenBSD ו - Linux</title>
+
+    <link href="/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar clearfix">
+      <div class="container">
+
+	<div class="navbar-brand">
+	  <a href="/">bindh3x.io</a>
+	</div>
+
+	<ul class="navbar-right">
+	  <li><a href="/">בלוג</a></li>
+	  <li><a href="/about/">אודות</a></li>
+	</ul>
+
+	<ul class="navbar-left">
+	  <li><a href="/rss.xml">rss</a></li>
+	</ul>
+
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+      <div class="post">
+	<div class="post-info">
+	  <time datetime="1525681409">
+	    07/05/2018
+	  </time>
+	</div>
+
+	<h1 class="post-title">על OpenBSD ו - Linux</h1>
+	<div class="post-line"></div>
+
+	<p>מבחינתי קריאת קוד זה כמו לקרוא ספר. כל חלק בקוד המקור הוא פרק בספר, כשאתם
+עובדים לפי הטרמינולוגיה הזאת אתם משפרים את היכולת שלכם, לומדים טכניקות
+חדשות, ומעצבים את סגנון הכתיבה שלכם. לכל אחד יש סטייל שונה, צורה שבה הוא
+כותב קוד, מעיין טביעת אצבע.</p>
+
+<p>לדוגמה:</p>
+
+<pre><code>int
+main(void)
+{
+
+
+}
+</code></pre>
+
+<p>או:</p>
+
+<pre><code>int main(void) {
+
+}
+</code></pre>
+
+<p>בשנים האחרונות אני קורא קוד כמה ספרים לפני שאני הולך
+לישון, ברכבת או סתם בתור למשרד הרישוי. אם אני מגלה משהו מעניין כמו חולשה
+בקוד, או קטע שאני לא מבין אני פשוט רושם הערה עם מספר השורה ומאוחר יותר אני
+מתעמק בזה יותר.</p>
+
+<p>אחת מתופעות הלוואי של קריאת קוד של אחרים, היא להיות סימפטי כלפי מתכנתים
+מתחילים, ללמוד כל יום משהו חדש.</p>
+
+<h2>OpenBSD</h2>
+
+<p><img src="/img/OpenBSD_logo.svg" alt="openbsd" title="" /></p>
+
+<p>אחד “מהספרים” שאני קורא בשנים האחרונות היא מערכת ההפעלה OpenBSD, במערכות
+הפעלה מבוססות - BSD כל קוד המקור של המערכת נמצא במקום אחד: הקרנל, וה -
+userland tools. לעומת זאת במערכת הפעלה מבוססת לינוקס, הכל מפוזר, אתם
+צריכים למשוך את util-linux/coreutils ממקור אחד, את הקרנל ממקור שני ולהרכיב
+את הכול ביחד.</p>
+
+<p>יש הרבה מאוד תכונות טובות ב - OpenBSD: כתיבת קוד בצורה נכונה, גישה בלתי
+מתפשרת, awesome man pages ותכונות אבטחה כמו: w^x, pledge, pf ועוד שעליהם
+נדבר בהמשך.</p>
+
+<p>את הקרנל של - OpenBSD, מפתחת קבוצה מצומצמת של מפתחים, ולכן לא כל חומרה
+נתמכת ישר מהקופסה OpenBSD. התמיכה בחומרה משתפרת מיום ליום, אומנם בקצב איטי אחרי הכל זה לא לינוקס
+שלחברות גדולות יש אינטרס בפיתוח שלו (:</p>
+
+<h2>אבטחה ו - Crypto</h2>
+
+<p>אחד הדברים שאני מאוד אוהב ב - OpenBSD, היא התמיכה החזקה בקריפטוגרפיה ישר מהקופסה. מרכז הפיתוח של הפרויקט הוא מביתו של המייסד תאו דה ראדט בקנדה וזה מאוד חשוב כי בקנדה, לעומת ארצות הברית אין מגבלות קריטיות על יצוא קריפטוגרפיה (לפחות זה מה שהם אומרים) <del>אני לא יודע מה המצב פה בישראל לגבי הנושא, אבל אני אשמח לדעת ולעדכן את הפוסט אם מישהו מהקוראים בקי בנושא</del></p>
+
+<p><strong>עדכון:</strong></p>
+
+<blockquote>
+  <p>בישראל קיים החל מ-1974 "צו צופן" המחייב כל גורם המעוניין לעסוק
+בהצפנה בקבלת רישיון עיסוק בהצפנה ממנכ"ל משרד הביטחון.</p>
+</blockquote>
+
+<p><a href="https://he.wikipedia.org/wiki/%D7%A7%D7%A8%D7%99%D7%A4%D7%98%D7%95%D7%92%D7%A8%D7%A4%D7%99%D7%94">מתוך
+Wikipedia</a></p>
+
+<p>(תודה לנחום שהפנה אותי למאמר).</p>
+
+<p><strong>1. w^x</strong></p>
+
+<p>במערכת הפעלה מודרנית, יש הגנה לדפי זכרון: קריאה, כתיבה, והרצה. קוד בזכרון
+יכול לרוץ רק אם דף הזכרון סומן עם סיבית ההרצה (execute bit). לדוגמה החלק
+בזכרון שמכיל את קוד התוכנה, יסומן כניתן להרצה אבל לא לכתיבה. חלקים אחרים
+יהיו ניתנים לכתיבה אבל לא להרצה.</p>
+
+<p>כאשר אתם מקצים זכרון עם <code>malloc</code> הזכרון שיקוצה יהיה ניתן לכתיבה וקריאה בלבד.
+כל זה מקשה מאוד על תוקף להריץ קוד זדוני, ומאלץ אותו להשתמש בטכניקות כמו
+<a href="https://en.wikipedia.org/wiki/Return-oriented_programming">ROP</a>.</p>
+
+<p>w^x הוא לא קונספט חדש (DEP on Windows) וכשמו כן הוא: דף הזכרון יכול להיות
+נתון לכתיבה או הרצה אבל לא שניהם ביחד מה שעוד יותר מקשה על ניצול קוד
+זדוני.</p>
+
+<p><strong>2. Pledge</strong></p>
+
+<p>היא קריאת מערכת שמגבילה תהליך מלגשת לקריאות מערכת אחרות ללא הרשאות.</p>
+
+<p>רוב ה - userland ב - OpenBSD כבר מכיל את הקריאות המתאימות. הוא עובד בצורה
+כזאת, שכל תוכנה מקבלת בדיוק את ה - syscalls שהיא צריכה, אם היא תנסה לגשת
+לקריאת מערכת אחרת כמו: execve בלי הרשאות מתאימות, התוכנית תסתיים מיד עם
+SIGABRT.</p>
+
+<p>כמו כן, לא ניתן לשנות את ה - flags שמעוברים ל - pledge בזמן ריצת התוכנית.</p>
+
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+
+int main(void) {
+    if (pledge("stdio") &lt; 0)
+        err(1, "pledge");
+
+    char *x[] = { "/bin/ls", 0, 0, 0 };
+    execve(x[0], &amp;x[0], NULL);
+    return 0;
+}
+</code></pre>
+
+<p><strong>3. Kernel re-linking</strong></p>
+
+<p>ב - OpenBSD בכל הפעלה מחדש של המערכת, הקרנל מקבל מרחב כתובת חדש.</p>
+
+<p><strong>4. PF</strong></p>
+
+<p>ל - OpenBSD יש Firewall בשם PF, עם תחביר מאוד חזק אני לא ארחיב עליו בפוסט
+הנוכחי כי אני רוצה לכתוב עליו מאמר נפרד, אם זה מעניין אותכם יש מדריך קצר
+<a href="https://www.openbsd.org/faq/index.html">פה</a>.</p>
+
+<p>אם אתם רוצים לקרוא עוד על תכונות האבטחה ב - OpenBSD תוכלו לקרוא בהרחבה
+<a href="https://www.openbsd.org/security.html">כאן</a>.</p>
+
+<h2>סיכום</h2>
+
+<p>הפוסט עשה לכם חשק לנסות את OpenBSD? הנה כמה דברים שכדאי שתקחו בחשבון אם
+אתם מהגרים מלינוקס:</p>
+
+<p><strong>1. Bash</strong></p>
+
+<p>מאז שאני זוכר את עצמי השתמשתי ב - Bash כ - Shell שלי, אבל אז גילית שהחבילה
+bash-completion שבורה על OpenBSD. אני יכול לחיות בלי השלמה אוטומטית אבל
+למה להתפשר? עברתי להשתמש ב - ZSH.</p>
+
+<p><strong>2. אחסון</strong></p>
+
+<p>OpenBSD תומכת רק ב - EXT2</p>
+
+<p><strong>3. SSD</strong></p>
+
+<p>OpenBSD (נכון לגרסא 6.3) לא תומכת ב - TRIM לינוקס תומכת ב: TRIM עוד מ -
+2008!</p>
+
+<p><strong>4. ביצועים</strong></p>
+
+<p>אתם תרגישו את הבדלי הביצועים באופן משמעותי, אני ממליץ לכם להשתמש ב - SSD
+על כל מערכת שמריצה OpenBSD.</p>
+
+<p>לסיום, OpenBSD היא מערכת טובה, אני בטוח שלחלק מהקוראים יש נסיון איתה. לפי
+דעתי אם אתם רוצים שרת עם ביצועים גבוהים תבחרו ב - Linux.</p>
+
+<p>אם אתם צריכים ראוטר או שרת מייל עם אבטחה גבוהה תבחרו ב - OpenBSD.</p>
+
+    </div>
+
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+	<p>Copyright &copy; 2017-2020 bindh3x</p>
+	<p>Licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>
+      </div>
+    </footer>
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-103398205-1">
+  </script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-103398205-1');
+  </script>
+  </body>
+</html>
+

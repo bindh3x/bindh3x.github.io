@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="he">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="בלוג Unix, פיתוח תכנה ואבטחת מידע.">
+    <meta name="author" content="bindh3x">
+    <meta name="robots" content="noarchive" />
+    <link rel="icon" href="/favicon.ico">
+
+    <title>bindh3x.io > תוציאו את המיטב מהטרמינל שלכם</title>
+
+    <link href="/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar clearfix">
+      <div class="container">
+
+	<div class="navbar-brand">
+	  <a href="/">bindh3x.io</a>
+	</div>
+
+	<ul class="navbar-right">
+	  <li><a href="/">בלוג</a></li>
+	  <li><a href="/about/">אודות</a></li>
+	</ul>
+
+	<ul class="navbar-left">
+	  <li><a href="/rss.xml">rss</a></li>
+	</ul>
+
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+      <div class="post">
+	<div class="post-info">
+	  <time datetime="1507446000">
+	    08/10/2017
+	  </time>
+	</div>
+
+	<h1 class="post-title">תוציאו את המיטב מהטרמינל שלכם</h1>
+	<div class="post-line"></div>
+
+	<p>את הפוסט הנוכחי רציתי לכתוב כבר הרבה זמן, והוא מכיל קוד שבו אני משתמש באופן קבוע.
+<br />
+אני בטוח שכל מי שהעיניים שלו מרצדות בטרמינל רוב שעות היום, ימצא אותו שימושי.
+תרגישו חופשי להשתמש/להפיץ את הקוד, הוא תחת רשיון <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPL-3.0</a>.</p>
+
+<h1>תמונת היום</h1>
+
+<p>אני לא משתמש בשולחן עבודה, אלא במנהל חלונות שכתבתי עם <code>Xlib</code>, ולכן הישום שפתוח אצלי רוב הזמן, הוא הטרמינל.
+בדרך כלל, אני מסתפק ברקע <code>solarized</code> פשוט. אבל לפעמים אני משנה תמונה.</p>
+
+<h3>Bing</h3>
+
+<p>משיכת כתובת ה - <code>URL</code> של תמונת היום מ - bing:</p>
+
+<pre><code>$ printf "http://bing.com/az/hprichbg/rb/" \
+&amp;&amp; curl bing.com -Ls | grep -oE "\w+.jpg" | head -n1
+</code></pre>
+
+<p>אפשר להגדיל לעשות, ולהגדיר את התמונה כרקע עם <code>feh</code>:</p>
+
+<pre><code>$ url=$(printf "http://bing.com/az/hprichbg/rb/" \
+&amp;&amp; curl bing.com -Ls | grep -oE "\w+.jpg" | head -n1)
+$ feh --bg-scale --no-fehbg "$url"
+</code></pre>
+
+<p>לשמחתי, <code>feh</code> יכול להגדיר תמונת רקע מכתובת <code>URL</code>, כך שאנחנו לא צריכים להוריד את התמונה.
+<br />
+אם אתם רוצים קצת יותר, מקמו את הפונקציה הבאה בקובץ ה - <code>bashrc</code> שלכם:</p>
+
+<pre><code>set-wallpaper() {
+    name=$(curl bing.com -Ls | grep -oE "\w+.jpg" | head -n1)
+    path="/home/$USER/Pictures/${name}"
+    if [ -f "$path"  ];then
+        feh --bg-scale --no-fehbg "$path"
+    else
+        curl -o "$path" -Ls "http://bing.com/az/hprichbg/rb/${name}"
+        feh --bg-scale --no-fehbg "$path"
+    fi
+}
+</code></pre>
+
+<h1>השוואת תאריכים</h1>
+
+<p>מי מאיתנו לא היה צריך לבדוק כמה ימים עברו מטווח תאריכים מסוים,
+כמו משלוח מחו"ל, או לוח זמנים? בדיוק בשביל זה נכתבה הפונקצייה <code>datediff</code>.</p>
+
+<pre><code>datediff() {
+    day_1=$(date -d "$1" +%s)
+    day_2=$(date -d "$2" +%s)
+    echo $(( (day_1 - day_2) / 86400   )) days | sed 's/-//g'
+}
+</code></pre>
+
+<p>כשתצטרכו לבדוק כמה זמן עבר מאז שהזמנתם את ה - <code>Raspberry pi</code> שלכם, תריצו:</p>
+
+<pre><code>$ datediff '01 aug' '20 aug'
+19 days
+</code></pre>
+
+<h1>בדיקת דואר-אלקטרוני</h1>
+
+<p>אחד הפיצ'רים היותר שימושים ב - Gmail, הוא הפיד URL שמאפשר לבדוק האם התקבלו הודעות חדשות, מבלי להתחבר לממשק.
+<br />
+<strong>חשוב לזכור:</strong> הרצת הפקודה מהטרמינל אינה מומלצת עם שם משתמש וסיסמא חשופים!
+תשתמשו בסקריפט עם קובץ <code>pgp</code> מוצפן.</p>
+
+<pre><code>$ data=$(curl -s -u "USER:PASSWORD" https://mail.google.com/mail/feed/atom)
+$ printf "$data" | grep -oPm1 "(?&lt;=&lt;title&gt;)[^&lt;]+" | wc -l
+12
+</code></pre>
+
+<p>הפלט יהיה מספר ההודעות שלא נקראו בתיבת הדואר שלכם.
+<br />
+אם תרצו לקבל את הכותרות של הדואר שהתקבל, תריצו:</p>
+
+<pre><code>$ data=$(curl -s -u "USER:PASSWORD" https://mail.google.com/mail/feed/atom)
+$ printf "$data" | grep -oPm1 "(?&lt;=&lt;title&gt;)[^&lt;]+"
+Hello, World
+Email from x.
+</code></pre>
+
+<p>אם אתם משתמשים באימות דו-שלבי, תיצרו "App password" ספציפי לפיד.</p>
+
+<h1>תהליכים לבני-אדם</h1>
+
+<p>הפקודה <code>ps</code> מציגה את התהליכים הרצים במערכת, אם תרצו ליצור פליט קריא יותר, תריצו את הפקודה:</p>
+
+<pre><code>$ ps ax --sort -pcpu,-%mem -o pcpu,comm,%mem \
+  | grep -v 0.0 | grep -v ps
+
+%CPU COMMAND         %MEM
+6.0 bash             0.2
+3.0 bash             0.1
+1.2 vim              0.2
+0.9 Xorg             0.7
+</code></pre>
+
+<h1>בדיקת יתרה בארנק Bitcoin</h1>
+
+<p>שימוש ב - Blockchain API בכדי לקבל את מצב היתרה של ארנק ביטקוין.</p>
+
+<pre><code>$ curl -sL blockchain.info/q/addressbalance/1PC9aZC4hNX2rmmrt7uHTfYAS3hRbph4UN \
+  | python -c 'import sys;print("%.09f BTC" % (int(sys.stdin.read()) / 100000000))'
+0.011884400 BTC
+</code></pre>
+
+<p>כתובת ה - bitcoin בדוגמה היא של ה - <a href="https://www.fsf.org/about/ways-to-donate/">FSF</a>, שנו אותה בהתאם.
+תשתדלו לא לנצל את ה - API כי אתם תיחסמו די מהר.</p>
+
+<h1>כלים למפתחים</h1>
+
+<h4>קיצור כתובת URL</h4>
+
+<p>ב - git.io, אני משתמש לא מעט והוא שימושי רק ל - Github כמובן:</p>
+
+<pre><code>gitio() {
+    if [ -z "${1}" -o -z "${2}"  ]; then
+        echo "Usage: gitio [url] ...";
+        return 1;
+    fi;
+    curl -i http://git.io/ -F "url=${2}" -F "code=${1}";
+}
+</code></pre>
+
+<h4>העלאת קבצים</h4>
+
+<p>הדרך הכי מהירה להעלאת קבצים מהטרמינל היא transfer.sh. לא הייתי ממליץ על העברת קבצים עם תוכן רגיש, אבל לשאר זה מעולה.
+את קוד המקור של השרת תוכלו למצוא <a href="https://github.com/dutchcoders/transfer.sh/tree/master/server">פה</a> (נכתב ב - Go)</p>
+
+<pre><code>upload-file() {
+    if [ -z ${1} -o -z "${2}" ];then
+        echo "Usage: upload-file [file] [name]"
+        return 1
+    fi
+    curl --upload-file "${1}" "https://transfer.sh/${2}"
+}
+</code></pre>
+
+<h1>בדיקת גרסת הפיתוח האחרונה של לינוקס</h1>
+
+<p>שימושי אם אתם אתם עוקבים אחרי הפיתוח של הקרנל.</p>
+
+<pre><code>$ curl -Ls https://github.com/torvalds/linux/releases \
+ | grep -oPm1 "(?&lt;=&lt;pre class=\"text-small text-gray\"&gt;)[^&lt;]+"
+Linux 4.14-rc3
+</code></pre>
+
+<h1>הורדת חבילה - AUR</h1>
+
+<p>אני לא משתמש ב - <a href="https://aur.archlinux.org/">AUR</a> באופן קבוע, ולכן אין לי מנהל חבילות שמיועד לכך,
+מדי פעם אני צריך להוריד חבילה ספציפית - וכמובן שגם לזה נכתבה פונקציה (:</p>
+
+<pre><code>aur-dl() {
+    if [ -z "$1" ];then
+        echo "Usage: aur-dl [package name] ..."
+        return 1
+    fi
+
+    pkg_name="${1}"
+    curl -O -L "http://aur.archlinux.org/cgit/aur.git/snapshot/${pkg_name}.tar.gz" -s -f
+
+    if [ $? -eq 22  ];then
+        echo "${pkg_name} not found."
+        # rm "${pkg_name}.tar.gz"
+        return 1
+    fi
+}
+</code></pre>
+
+<h1>סיכום</h1>
+
+<p>זהו, אני מקווה שהקוד היה שימושי עבורכם, תודה שקראתם את הפוסט.</p>
+
+    </div>
+
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+	<p>Copyright &copy; 2017-2020 bindh3x</p>
+	<p>Licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>
+      </div>
+    </footer>
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-103398205-1">
+  </script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-103398205-1');
+  </script>
+  </body>
+</html>
+
