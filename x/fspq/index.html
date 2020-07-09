@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="he">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="בלוג Unix, פיתוח תכנה ואבטחת מידע.">
+    <meta name="author" content="bindh3x">
+    <meta name="robots" content="noarchive" />
+    <link rel="icon" href="/favicon.ico">
+
+    <title>bindh3x.io > File System Priority Queue (FSPQ)</title>
+
+    <link href="/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar clearfix">
+      <div class="container">
+
+	<div class="navbar-brand">
+	  <a href="/">bindh3x.io</a>
+	</div>
+
+	<ul class="navbar-right">
+	  <li><a href="/">בלוג</a></li>
+	  <li><a href="/about/">אודות</a></li>
+	</ul>
+
+	<ul class="navbar-left">
+	  <li><a href="/rss.xml">rss</a></li>
+	</ul>
+
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+      <div class="post">
+	<div class="post-info">
+	  <time datetime="1594278876">
+	    09/07/2020
+	  </time>
+	</div>
+
+	<h1 class="post-title">File System Priority Queue (FSPQ)</h1>
+	<div class="post-line"></div>
+
+	<p>לאחרונה כתבתי תכנה שקוראת מספר גדול של קבצים ומבצעת עליהם פעולות שונות, במהלך הפיתוח רציתי לממש "תור עדיפות"
+על מנת ליעל את פעילות התכנה.</p>
+
+<p>תור עדיפות (Priority Queue) הוא מבנה נתונים פשוט שמכיל רשימה של עצמים אשר מסודרים לפי עדיפות כלשהי. 
+לדוגמה אם יש לי רשימה של ספרים, שבה כל ספר מקבל דירוג של 1-5 כוכבים ואני רוצה שהספרים בעלי הדירוג הגבוה יותר
+יופיעו ראשונים, דרך אחת לפתור את הבעיה היא  לשמור אותם ב - Priority Queue. המימוש הפשוט הוא רשימה מקושרת שמחזיקה
+את רשימת הקבצים מסודרים לפי סדר העדיפויות שלהם. בגלל שהקוד שלי נכתב על מערכת מבוססת Unix,
+היה לי רעיון אחר: למה לא ליצור File System Priority Queue?</p>
+
+<p>במערכת מבוססות Unix, כאשר אתם מריצים את הפקודה <code>ls(1)</code> או - <code>find(1)</code> הקבצים שיוצגו לכם יהיו מסודרים בסדר אלפבתי. זה מאפשר לנו לעשות דברים מעניינים כמו יצירת תור עדיפות!</p>
+
+<p>כך ניצור את התור: נניח שיש לי תקייה מלאה בקבצים, ואני רוצה להקצות לכל קובץ עדיפות. לצורך הדוגמה קבצים בעלי עדיפות "0" יהיו בעלי עדיפות גבוה, "1" עדיפות רגילה ו - "2" עדיפות נמוכה. במקרה הזה אני יצור עבור כל עדיפות תקיה:</p>
+
+<pre><code>$ mkdir files/{0,1,2}
+</code></pre>
+
+<p>לאחר מכן אני יעביר (או יקשר) את הקבצים בעלי ההעדיפות הגבוהה ל - "0", רגילה ל - "1" ונמוכה ל - "2":</p>
+
+<pre><code>$ mv  files/file.txt files/file2.txt files/0
+$ mv  files/file3.txt files/file4.txt files/1
+$ mv  files/file5.txt files/file6.txt files/2
+</code></pre>
+
+<p>זהו! עכשיו כשאני יריץ <code>find(1)</code> על תקיית הקבצים הם יוצגו לי לפי סדר עדיפות:</p>
+
+<pre><code>$ find ./files/ -type f
+/files/0/file1.txt
+./files/0/file2.txt
+./files/0/file4.txt
+./files/1/file10.txt
+./files/1/file3.txt
+./files/1/file5.txt
+./files/1/file6.txt
+./files/2/file7.txt
+./files/2/file8.txt
+./files/2/file9.txt
+</code></pre>
+
+<p>השמות של התקיות לא חייבים להיות "0", "1" או "2", הם יכולים להיות:</p>
+
+<ul>
+<li>"a", "b", "c"</li>
+<li>"x", "y", z"</li>
+<li>"high", "low"</li>
+</ul>
+
+<p>לדוגמה:</p>
+
+<pre><code>$ find ./files/ -type f
+./files/high/file1.txt
+./files/high/file2.txt
+./files/high/file4.txt
+./files/low/file7.txt
+./files/low/file8.txt
+./files/low/file9.txt
+</code></pre>
+
+<p>פתרון פשוט ואלגנטי.</p>
+
+    </div>
+
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+	<p>Copyright &copy; 2017-2020 bindh3x</p>
+	<p>Licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>
+      </div>
+    </footer>
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-103398205-1">
+  </script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-103398205-1');
+  </script>
+  </body>
+</html>
+
