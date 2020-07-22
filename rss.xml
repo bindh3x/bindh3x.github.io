@@ -5,9 +5,21 @@
 <link>https://bindh3x.io</link>
 <description>בלוג Unix, פיתוח תכנה ואבטחת מידע.</description>
 <language>he</language>
-<lastBuildDate>Thu, 09 Jul 2020 10:20:31 +0300</lastBuildDate>
-<pubDate>Thu, 09 Jul 2020 10:20:31 +0300</pubDate>
+<lastBuildDate>Wed, 22 Jul 2020 21:38:52 +0300</lastBuildDate>
+<pubDate>Wed, 22 Jul 2020 21:38:52 +0300</pubDate>
 <atom:link href="https://bindh3x.io/rss.xml" rel="self" type="application/rss+xml" />
+<item>
+<title>איך לתקן באג בתכנה</title>
+<dc:creator>bindh3x</dc:creator>
+<guid>https://bindh3x.io/x/fixbug/</guid>
+<link>https://bindh3x.io/x/fixbug/</link>
+<pubDate>Wed, 22 Jul 2020 21:38:12 +0300</pubDate>
+<description><![CDATA[
+  <p>מאוד כיף לשבת ולכתוב קוד באופן ספונטני מבלי לתכנן שוב דבר, כשמדובר בסקריפט קצר זה גם לא כזה קריטי.
+אבל כשהקוד שלנו עושה פעולה מורכבת, חשוב לשבת ולתכנן לפני המימוש. ההבדל בין תכנה טובה, לגרועה  מסתכם
+בארכיטקטורה. אם אתם לא מבינים מה אתם צריכים לממש ומהי הצורה היעילה ביותר לעשות זאת, איך תכתבו את הקוד?...
+]]></description>
+</item>
 <item>
 <title>File System Priority Queue (FSPQ)</title>
 <dc:creator>bindh3x</dc:creator>
